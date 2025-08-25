@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Companion - Web App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="splash-screen">
+            <div class="splash-content">
+                <div class="splash-logo">📚</div>
+                <h1>Reading Companion</h1>
+                <p>Your Duolingo for Reading</p>
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav" id="bottom-nav" style="display: none;">
+            <button class="nav-item active" data-screen="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" data-screen="mood">
+                <i class="fas fa-smile"></i>
+                <span>Mood</span>
+            </button>
+            <button class="nav-item" data-screen="library">
+                <i class="fas fa-book"></i>
+                <span>Library</span>
+            </button>
+            <button class="nav-item" data-screen="community">
+                <i class="fas fa-users"></i>
+                <span>Community</span>
+            </button>
+            <button class="nav-item" data-screen="reading">
+                <i class="fas fa-book-open"></i>
+                <span>Read</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content" style="display: none;">
+            
+            <!-- Dashboard Screen -->
+            <div class="screen active" id="dashboard-screen">
+                <header class="screen-header">
+                    <h1>Good Morning! 🌅</h1>
+                    <p id="welcome-text">Ready to continue your reading journey?</p>
+                </header>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="current-streak">0</span>
+                            <span class="stat-label">Day Streak</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="books-completed">0</span>
+                            <span class="stat-label">Books Read</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="pages-read">0</span>
+                            <span class="stat-label">Pages Read</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="daily-goal-card">
+                    <div class="goal-header">
+                        <h3>Today's Goal</h3>
+                        <span class="goal-badge" id="goal-badge">🎯</span>
+                    </div>
+                    <div class="goal-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="daily-progress"></div>
+                        </div>
+                        <span class="progress-text" id="progress-text">0 / 20 pages</span>
+                    </div>
+                </div>
+
+                <div class="current-book-card" id="current-book-card">
+                    <h3>Continue Reading</h3>
+                    <div class="book-info">
+                        <div class="book-cover">📖</div>
+                        <div class="book-details">
+                            <h4 id="current-book-title">Select a book to start reading</h4>
+                            <p id="current-book-author">-</p>
+                            <div class="book-progress">
+                                <div class="progress-bar small">
+                                    <div class="progress-fill" id="book-progress"></div>
+                                </div>
+                                <span class="book-progress-text" id="book-progress-text">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="continueReading()">Continue Reading</button>
+                </div>
+
+                <div class="recommendations-section">
+                    <h3>Recommended for You</h3>
+                    <div class="book-grid" id="recommendations-grid">
+                        <!-- Recommendations will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mood Tracking Screen -->
+            <div class="screen" id="mood-screen">
+                <header class="screen-header">
+                    <h1>Daily Mood Check-in 😊</h1>
+                    <p>How are you feeling today?</p>
+                </header>
+
+                <div class="mood-selector">
+                    <button class="mood-button" data-mood="very-happy">
+                        <span class="mood-emoji">😄</span>
+                        <span class="mood-label">Very Happy</span>
+                    </button>
+                    <button class="mood-button" data-mood="happy">
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-label">Happy</span>
+                    </button>
+                    <button class="mood-button" data-mood="neutral">
+                        <span class="mood-emoji">😐</span>
+                        <span class="mood-label">Neutral</span>
+                    </button>
+                    <button class="mood-button" data-mood="sad">
+                        <span class="mood-emoji">😔</span>
+                        <span class="mood-label">Sad</span>
+                    </button>
+                    <button class="mood-button" data-mood="very-sad">
+                        <span class="mood-emoji">😢</span>
+                        <span class="mood-label">Very Sad</span>
+                    </button>
+                </div>
+
+                <div class="emotion-tags" id="emotion-tags" style="display: none;">
+                    <h3>What's making you feel this way?</h3>
+                    <div class="tags-container">
+                        <!-- Tags will be populated based on selected mood -->
+                    </div>
+                </div>
+
+                <div class="mood-notes" id="mood-notes" style="display: none;">
+                    <h3>Any notes about your day?</h3>
+                    <textarea placeholder="Write about your day..." id="mood-note-text"></textarea>
+                </div>
+
+                <button class="btn btn-primary" id="save-mood-btn" onclick="saveMoodEntry()" style="display: none;">
+                    Save Mood Entry
+                </button>
+
+                <div class="mood-recommendations" id="mood-recommendations" style="display: none;">
+                    <h3>Perfect books for your mood:</h3>
+                    <div class="book-grid" id="mood-books-grid">
+                        <!-- Mood-based recommendations -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Screen -->
+            <div class="screen" id="library-screen">
+                <header class="screen-header">
+                    <h1>Your Library 📚</h1>
+                    <button class="btn btn-secondary" onclick="addBook()">
+                        <i class="fas fa-plus"></i> Add Book
+                    </button>
+                </header>
+
+                <div class="library-filters">
+                    <button class="filter-btn active" data-filter="all">All Books</button>
+                    <button class="filter-btn" data-filter="reading">Currently Reading</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                    <button class="filter-btn" data-filter="want-to-read">Want to Read</button>
+                </div>
+
+                <div class="library-grid" id="library-grid">
+                    <!-- Books will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Community Screen -->
+            <div class="screen" id="community-screen">
+                <header class="screen-header">
+                    <h1>Community 👥</h1>
+                    <div class="community-tabs">
+                        <button class="tab-btn active" data-tab="leaderboard">Leaderboard</button>
+                        <button class="tab-btn" data-tab="reviews">Reviews</button>
+                    </div>
+                </header>
+
+                <div class="tab-content active" id="leaderboard-tab">
+                    <div class="leaderboard">
+                        <h3>🏆 Reading Champions</h3>
+                        <div class="leaderboard-list" id="leaderboard-list">
+                            <!-- Leaderboard entries -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="reviews-tab">
+                    <div class="reviews-section">
+                        <h3>📝 Recent Reviews</h3>
+                        <div class="reviews-list" id="reviews-list">
+                            <!-- Book reviews -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading Screen -->
+            <div class="screen" id="reading-screen">
+                <header class="reading-header">
+                    <button class="btn btn-icon" onclick="exitReading()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="reading-info">
+                        <h3 id="reading-book-title">Book Title</h3>
+                        <span id="reading-progress">Page 1 of 300</span>
+                    </div>
+                    <button class="btn btn-icon" onclick="toggleReadingSettings()">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </header>
+
+                <div class="reading-content">
+                    <div class="reading-text" id="reading-text">
+                        <p>Select a book to start reading...</p>
+                    </div>
+                </div>
+
+                <div class="reading-controls">
+                    <button class="btn btn-secondary" onclick="previousPage()">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <div class="reading-progress-container">
+                        <input type="range" class="reading-slider" id="page-slider" min="1" max="300" value="1">
+                        <span id="page-indicator">1 / 300</span>
+                    </div>
+                    <button class="btn btn-secondary" onclick="nextPage()">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="reading-timer" id="reading-timer">
+                    <i class="fas fa-clock"></i>
+                    <span id="timer-display">00:00</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="book-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Book</h3>
+                <button class="close-btn" onclick="closeModal('book-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="book-title-input" placeholder="Book Title" class="form-input">
+                <input type="text" id="book-author-input" placeholder="Author" class="form-input">
+                <select id="book-genre-input" class="form-input">
+                    <option value="">Select Genre</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="non-fiction">Non-Fiction</option>
+                    <option value="self-help">Self-Help</option>
+                    <option value="biography">Biography</option>
+                    <option value="romance">Romance</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="science-fiction">Science Fiction</option>
+                    <option value="fantasy">Fantasy</option>
+                </select>
+                <input type="number" id="book-pages-input" placeholder="Total Pages" class="form-input">
+                <button class="btn btn-primary" onclick="saveNewBook()">Add Book</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
